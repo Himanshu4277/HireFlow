@@ -1,4 +1,58 @@
-export default function register() {
+"use client"
+
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+
+type initialStateType = {
+  username: string,
+  email: string,
+  password: string,
+  confirmPassword: string
+
+}
+
+export default function Register() {
+  const router = useRouter()
+  const initialState: initialStateType = {
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  }
+
+  const [form, setForm] = useState(initialState)
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(form)
+      })
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Something went wrong");
+        return;
+      }
+
+
+      setForm(initialState)
+      router.push("/login")
+
+    } catch (error) {
+      console.error(error);
+      alert("Server error");
+    }
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
 
@@ -13,13 +67,15 @@ export default function register() {
         </div>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
 
           <div>
             <label className="text-sm text-gray-600">Full Name</label>
             <input
               type="text"
+              onChange={(e: any) => setForm({ ...form, username: e.target.value })}
               placeholder="Enter your name"
+              value={form.username}
               className="w-full mt-1 p-3 border rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -28,6 +84,9 @@ export default function register() {
             <label className="text-sm text-gray-600">Email</label>
             <input
               type="email"
+              onChange={(e: any) => setForm({ ...form, email: e.target.value })}
+              required={true}
+              value={form.email}
               placeholder="Enter your email"
               className="w-full mt-1 p-3 border rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
@@ -37,6 +96,9 @@ export default function register() {
             <label className="text-sm text-gray-600">Password</label>
             <input
               type="password"
+              onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+              required={true}
+              value={form.password}
               placeholder="Create password"
               className="w-full mt-1 p-3 border rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
@@ -47,6 +109,9 @@ export default function register() {
             <input
               type="password"
               placeholder="Confirm password"
+              onChange={(e: any) => setForm({ ...form, confirmPassword: e.target.value })}
+              required={true}
+              value={form.confirmPassword}
               className="w-full mt-1 p-3 border rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -63,9 +128,9 @@ export default function register() {
         {/* Footer */}
         <p className="text-center text-sm text-gray-500">
           Already have an account?{" "}
-          <a href="/login" className="text-indigo-600 hover:underline">
+          <Link href="/login" className="text-indigo-600 hover:underline">
             Login
-          </a>
+          </Link>
         </p>
 
       </div>

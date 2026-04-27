@@ -5,6 +5,7 @@ interface userSchemaProps extends Document {
     username: string,
     email: string,
     password: string,
+    confirmPassword: string
     createdAt: Date
 
 }
@@ -20,6 +21,10 @@ const userSchema: Schema<userSchemaProps> = new Schema({
         require: true
     },
     password: {
+        type: String,
+        require: true
+    },
+    confirmPassword: {
         type: String,
         require: true
     }

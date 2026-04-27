@@ -1,77 +1,132 @@
-export default function dashboard() {
+"use client";
+
+import { useState, useEffect } from "react";
+import { useAuthStore } from "../store/authStore";
+
+
+
+type JobType = {
+  _id: string;
+  title: string;
+  company: string;
+  description: string;
+  salary?: string;
+  location?: string;
+};
+
+export default function Dashboard() {
+  const { token } = useAuthStore();
+  const [jobCard, setJobCard] = useState<JobType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+
+        if (!token) {
+          alert("Login first");
+          return;
+        }
+
+        const res = await fetch("/api/jobs",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        const jobData = await res.json();
+        setJobCard(jobData.data);
+
+      } catch (error) {
+        console.error("Failed to fetch jobs");
+
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, [token]);
+
+  if (loading) {
+    return <div className="text-center mt-20">Loading...</div>;
+  }
+
+  if (jobCard.length === 0) {
+    return <div className="text-center mt-20">No jobs found</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
-
-      {/* Top Bar */}
-      <div className="max-w-7xl mx-auto flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">
-          AI Resume Dashboard
+    <div className="min-h-screen bg-slate-950 px-6 py-12">
+      {/* Header */}
+      <div className="max-w-3xl mx-auto mb-10">
+        <h1 className="text-4xl font-extrabold text-slate-100 tracking-tight">
+          Job <span className="text-indigo-400">Board</span>
         </h1>
-
-        <button className="bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-          Upload Resume
-        </button>
+        <p className="text-slate-500 text-sm mt-1">
+          {jobCard.length} open positions
+        </p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-6 mb-8">
+      <div className="max-w-3xl mx-auto flex flex-col gap-4">
+        {jobCard.map((job) => (
+          <div
+            key={job._id}
+            className="group relative bg-slate-900 border border-slate-800 rounded-2xl px-8 py-6 hover:border-indigo-500/40 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(99,102,241,0.08)] transition-all duration-200 cursor-pointer overflow-hidden"
+          >
+            {/* Left accent */}
+            <div className="absolute left-0 top-0 h-full w-0.5 bg-gradient-to-b from-indigo-400 to-violet-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
 
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow space-y-2">
-          <h2 className="text-gray-400 text-sm">Total Resumes</h2>
-          <p className="text-3xl font-bold">1,245</p>
-        </div>
+            {/* Title + Salary */}
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h2 className="text-lg font-bold text-slate-100">
+                {job.title}
+              </h2>
 
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow space-y-2">
-          <h2 className="text-gray-400 text-sm">Jobs Matched</h2>
-          <p className="text-3xl font-bold">389</p>
-        </div>
+              {job.salary && (
+                <span className="text-sm font-semibold text-indigo-400 bg-indigo-400/10 px-3 py-1 rounded-full">
+                  {job.salary}
+                </span>
+              )}
+            </div>
 
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow space-y-2">
-          <h2 className="text-gray-400 text-sm">Active Users</h2>
-          <p className="text-3xl font-bold">520</p>
-        </div>
+            {/* Company + Location */}
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-sm text-slate-400">
+                {job.company}
+              </span>
 
-      </div>
+              {job.location && (
+                <>
+                  <span className="w-1 h-1 bg-slate-700 rounded-full" />
+                  <span className="text-sm text-slate-500">
+                    📍 {job.location}
+                  </span>
+                </>
+              )}
+            </div>
 
-      {/* Main Section */}
-      <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-6">
+            {/* Description */}
+            {job.description && (
+              <p className="text-sm text-slate-500 line-clamp-2 mb-5">
+                {job.description}
+              </p>
+            )}
 
-        {/* Activity */}
-        <div className="md:col-span-2 bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-4">
-          <h2 className="text-lg font-semibold">Recent Activity</h2>
+            {/* Footer */}
+            <div className="flex items-center justify-between pt-4 border-t border-slate-800">
+              <span className="text-xs text-slate-600 bg-slate-800 px-2 py-1 rounded">
+                Full-time
+              </span>
 
-          <ul className="space-y-3 text-gray-300 text-sm">
-            <li>✔ Resume analyzed for John Doe</li>
-            <li>✔ New job match for React Developer</li>
-            <li>✔ Resume uploaded by Sarah Khan</li>
-            <li>✔ AI scoring completed for 25 candidates</li>
-          </ul>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-4">
-          <h2 className="text-lg font-semibold">Quick Actions</h2>
-
-          <div className="space-y-3">
-
-            <button className="w-full bg-indigo-600 py-2 rounded-lg hover:bg-indigo-700 transition">
-              Analyze Resume
-            </button>
-
-            <button className="w-full bg-gray-800 py-2 rounded-lg hover:bg-gray-700 transition">
-              View Candidates
-            </button>
-
-            <button className="w-full bg-gray-800 py-2 rounded-lg hover:bg-gray-700 transition">
-              Job Listings
-            </button>
-
+              <button className="text-xs font-bold uppercase text-indigo-400 border border-indigo-400/30 px-4 py-1.5 rounded-lg hover:bg-indigo-400 hover:text-slate-950 transition">
+                Apply Now →
+              </button>
+            </div>
           </div>
-        </div>
-
+        ))}
       </div>
-
     </div>
   );
 }
-  

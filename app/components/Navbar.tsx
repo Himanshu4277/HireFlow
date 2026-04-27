@@ -1,25 +1,41 @@
-import Link from "next/link"
+"use client";
+
+import Link from "next/link";
+import { useAuthStore } from "../store/authStore";
+import { useRouter } from "next/navigation";
 
 
-const Navbar = () => {
+export default function Navbar() {
+  const router = useRouter()
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
+  const logout = useAuthStore((s) => s.logout);
+
+  const handleLogout = () => {
+    logout()
+    router.push("/login");
+  }
 
   return (
-    <>
-      <div className="flex justify-around p-4 bg-gray-700">
-        <div className="font-extrabold text-2xl cursor-pointer text-amber-400">HireFlow</div>
-        <div>
-          <ul className="flex space-x-8 font-bold ">
-            <Link href="/" className="cursor-pointer hover:text-blue-400 ">Home</Link>
-            <Link href="/about" className="cursor-pointer hover:text-blue-400 ">About</Link>
-            <Link href="/contactUs" className="cursor-pointer hover:text-blue-400 ">Contact Us</Link>
-            <Link href="/login" className="cursor-pointer hover:text-blue-400 ">Login</Link>
-            <Link href="/register" className="cursor-pointer hover:text-blue-400 ">SignUp</Link>
-          </ul>
-        </div>
+    <div className="flex justify-around p-4 bg-gray-700 text-white">
+      <div className="font-extrabold text-2xl text-amber-400">
+        HireFlow
+      </div>
 
-      </div >
-    </>
-  )
+      <ul className="flex space-x-8 font-bold items-center">
+        <Link href="/">Home</Link>
+        <Link href="/jobs/create">Create Job Profile</Link>
+        <Link href="/about">About</Link>
+        <Link href="/contactUs">Contact Us</Link>
+
+        {isLoggedIn ? (
+          <button onClick={handleLogout} className="cursor-pointer">Logout</button>
+        ) : (
+          <>
+            <Link href="/login">Login</Link>
+            <Link href="/register">SignUp</Link>
+          </>
+        )}
+      </ul>
+    </div>
+  );
 }
-
-export default Navbar
