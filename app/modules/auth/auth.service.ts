@@ -15,7 +15,7 @@ export async function createUser(req: Request) {
 
     try {
         await dbConnect()
-        const { email, password, username } = await req.json()
+        const { email, password, username, role } = await req.json()
         if (!email || !password || !username) {
             return NextResponse.json(
                 { error: "Missing fields" },
@@ -32,16 +32,18 @@ export async function createUser(req: Request) {
         const hashPassword = await bcrypt.hash(password, 10)
 
         const data = await User.create({
+            role,
             username,
             email,
             password: hashPassword
         })
 
-        const token = jwt.sign({ userId: data._id }, secret!, { expiresIn: "7d" })
+        const token = jwt.sign({ userId: data._id, role: data.role }, secret!, { expiresIn: "7d" })
 
         return NextResponse.json({
             message: "User created successfully",
             token,
+            role: data.role,
             user: {
                 id: data._id,
                 username: data.username,
@@ -91,7 +93,7 @@ export async function loginUser(req: Request) {
         }
 
         const token = jwt.sign(
-            { userId: user._id },
+            { userId: user._id, role: user.role },
             secret!,
             { expiresIn: "7d" }
         );
@@ -99,6 +101,7 @@ export async function loginUser(req: Request) {
         return NextResponse.json(
             {
                 message: "Login successful",
+                role: user.role,
                 token,
                 user: {
                     id: user._id,

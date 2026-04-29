@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 
 type initialStateType = {
+  role: string,
   username: string,
   email: string,
   password: string,
@@ -16,6 +18,7 @@ type initialStateType = {
 export default function Register() {
   const router = useRouter()
   const initialState: initialStateType = {
+    role: "",
     username: "",
     email: "",
     password: "",
@@ -46,6 +49,7 @@ export default function Register() {
 
 
       setForm(initialState)
+      toast.success("Sig-Up Successfully Done")
       router.push("/login")
 
     } catch (error) {
@@ -68,6 +72,17 @@ export default function Register() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          <div className="border border-gray-500 rounded p-1.5">
+            <select
+              value={form.role}
+              onChange={(e) => setForm({ ...form, role: e.target.value })}
+            >
+              <option className="text-gray-700" value="">Select Role</option>
+              <option value="recruiter">Recruiter</option>
+              <option value="jobSeeker">Job Seeker</option>
+            </select>
+          </div>
 
           <div>
             <label className="text-sm text-gray-600">Full Name</label>

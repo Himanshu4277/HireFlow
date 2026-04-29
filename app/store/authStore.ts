@@ -1,33 +1,52 @@
 import { create } from "zustand";
 
-
 type AuthState = {
   isLoggedIn: boolean;
+  role: string | null;
   token: string | null;
   init: () => void;
-  login: (token: string) => void;
+  login: (token: string, role: string) => void;
   logout: () => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
   isLoggedIn: false,
+  role: null,
   token: null,
 
-  // run once on app start (reads localStorage)
   init: () => {
     const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
     if (token) {
-      set({ isLoggedIn: true, token });
+      set({
+        isLoggedIn: true,
+        token,
+        role, 
+      });
     }
   },
 
-  login: (token) => {
+  login: (token, role) => {
     localStorage.setItem("token", token);
-    set({ isLoggedIn: true, token });
+    localStorage.setItem("role", role);
+
+    set({
+      isLoggedIn: true,
+      token,
+      role,
+    });
   },
 
+  // logout
   logout: () => {
     localStorage.removeItem("token");
-    set({ isLoggedIn: false, token: null });
+    localStorage.removeItem("role");
+
+    set({
+      isLoggedIn: false,
+      token: null,
+      role: null, // ✅ reset role
+    });
   },
 }));

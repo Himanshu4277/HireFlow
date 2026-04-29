@@ -2,67 +2,73 @@ import dbConnect from "@/app/lib/db";
 import Application from "@/app/models/Application";
 import Job from "@/app/models/Job";
 
-
+// ================= APPLY =================
 export const applyJob = async (
-    userId: string,
-    jobId: string,
-    resume?: string
+  userId: string,
+  jobId: string,
+  resume?: string
 ) => {
+  await dbConnect();
 
-    try {
-        await dbConnect()
+  const jobExists = await Job.findById(jobId);
+  if (!jobExists) throw new Error("No job found");
 
-        const jobExists = await Job.findById(jobId)
-        if (!jobExists) {
-            throw new Error("NO Job Found")
-        }
+  const alreadyApplied = await Application.findOne({
+    user: userId,
+    job: jobId,
+  });
 
-        const alreadyApplied = await Application.findOne({ user: userId, job: jobId })
-        if (alreadyApplied) {
-            throw new Error("You already applied to this job");
-        }
-        const apply = await Application.create({
-            user: userId,
-            job: jobId,
-            resume,
-        })
+  if (alreadyApplied) {
+    throw new Error("You already applied");
+  }
 
-        return apply
-    } catch (error: any) {
-        if (error.code === 11000) {
-            throw new Error("You already applied to this job");
-        }
-        throw new Error(error.message)
-    }
-}
-
-
-export const getUserApplications = async (userId: string) => {
-    await dbConnect()
-    return await Application.find({ user: userId })
-        .populate("job")
-        .sort({ createdAt: -1 });
+  return await Application.create({
+    user: userId,
+    job: jobId,
+    resume,
+  });
 };
 
+// ================= USER APPLICATIONS =================
+export const getUserApplications = async (userId: string) => {
+  await dbConnect();
 
+  return await Application.find({ user: userId })
+    .populate("job")
+    .sort({ createdAt: -1 });
+};
+
+// ================= RECRUITER APPLICATIONS =================
+export const getApplicationsForRecruiter = async (recruiterId: string) => {
+  await dbConnect();
+
+  return await Application.find()
+    .populate("user", "username email")
+    .populate({
+      path: "job",
+      match: { postedBy: recruiterId },
+    });
+};
+
+// ================= UPDATE STATUS =================
 export const updateApplicationStatus = async (
-    appId: string,
-    status: "accepted" | "rejected",
-    currentUserId: string
+  appId: string,
+  status: "accepted" | "rejected",
+  recruiterId: string
 ) => {
-    await dbConnect();
+  await dbConnect();
 
-    const application = await Application.findById(appId).populate("job");
-    if (!application) throw new Error("Application not found");
+  const application = await Application.findById(appId).populate("job");
 
-    // check if current user is job owner
-    // @ts-ignore
-    if (application.job.postedBy.toString() !== currentUserId) {
-        throw new Error("Not authorized");
-    }
+  if (!application) throw new Error("Application not found");
 
-    application.status = status;
-    await application.save();
+  // @ts-ignore
+  if (application.job.postedBy.toString() !== recruiterId) {
+    throw new Error("Not authorized");
+  }
 
-    return application;
+  application.status = status;
+  await application.save();
+
+  return application;
 };

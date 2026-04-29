@@ -41,7 +41,7 @@ const Login = () => {
         alert(data.message || "Error while Login");
         return;
       }
-      login(data.token);
+      login(data.token, data.role);
       setForm(initialValue)
       router.push("/dashboard");
     } catch (error) {

@@ -1,10 +1,14 @@
 "use client";
-
+import { useEffect } from "react";
+import { useAuthStore } from "@/app/store/authStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function JobPostForm() {
     const router = useRouter()
+
+    const { isLoggedIn, role, token } = useAuthStore()
+
     const initialValue = {
         title: "",
         company: "",
@@ -14,7 +18,23 @@ export default function JobPostForm() {
     }
     const [recruiterForm, setRecruiterForm] = useState(initialValue)
     const [loading, setLoading] = useState(false);
-    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            router.push("/login");
+            return;
+        }
+
+        if (role !== "recruiter") {
+            router.push("/");
+        }
+    }, [role, isLoggedIn, router]);
+
+    // ⛔ Prevent UI flicker
+    if (!isLoggedIn || role !== "recruiter") {
+        return null;
+    }
+
     const handleSubmit = async (e: any) => {
         e.preventDefault()
         try {
@@ -200,7 +220,7 @@ export default function JobPostForm() {
                                 </button>
 
                                 <button
-                                type="button"
+                                    type="button"
                                     onClick={() => setRecruiterForm(initialValue)}
                                     className="px-5 py-3 rounded-xl text-sm font-medium text-[#9A8A7A] bg-[#F5F2EC] hover:bg-[#EDE8E0] transition-colors duration-150"
                                 >

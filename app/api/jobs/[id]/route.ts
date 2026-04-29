@@ -1,10 +1,10 @@
-import { findJobController } from "@/app/modules/jobs/jobs.controller";
+import {  findJobController } from "@/app/modules/jobs/jobs.controller";
 
 export async function GET(
-    { params }: { params: { id: string } }
+    req: Request,
+    context: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await context.params;
 
-    return findJobController(params.id)
-
-
+    return findJobController(id);
 }

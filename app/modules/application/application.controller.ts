@@ -1,106 +1,100 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/app/lib/db";
 import {
-    applyJob,
-    getUserApplications,
-    updateApplicationStatus
-} from "@/app/modules/application/application.service"
-import { getUserFromToken } from "@/app/utils/tokenVerify";
+  applyJob,
+  getUserApplications,
+  updateApplicationStatus,
+  getApplicationsForRecruiter,
+} from "@/app/modules/application/application.service";
+import { verifyToken } from "@/app/lib/auth";
 
+// ================= APPLY =================
 export async function applyJobController(req: NextRequest) {
-    try {
-        await dbConnect();
+  try {
+    const { jobId, resume } = await req.json();
+    const user = verifyToken(req);
 
-        const { jobId, resume } = await req.json();
-
-        const user = getUserFromToken(req);
-        const userId = user.id;
-
-        if (!userId) {
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-            );
-        }
-
-        if (!jobId) {
-            return NextResponse.json(
-                { message: "Job ID is required" },
-                { status: 400 }
-            );
-        }
-
-        const application = await applyJob(userId, jobId, resume);
-
-        return NextResponse.json({
-            message: "Applied successfully",
-            data: application,
-        });
-    } catch (error: any) {
-        return NextResponse.json(
-            { message: error.message },
-            { status: 400 }
-        );
+    if (!user.userId) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+
+    if (user.role === "recruiter") {
+      return NextResponse.json(
+        { message: "Recruiters can't apply" },
+        { status: 403 }
+      );
+    }
+
+    const application = await applyJob(user.userId, jobId, resume);
+
+    return NextResponse.json({
+      message: "Applied successfully",
+      data: application,
+    });
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message }, { status: 400 });
+  }
 }
 
-
+// ================= USER APPLICATIONS =================
 export async function getUserApplicationscontroller(req: NextRequest) {
-    try {
-        await dbConnect();
+  try {
+    const user = verifyToken(req);
 
-        const user = getUserFromToken(req);
-        const userId = user.id;
+    const applications = await getUserApplications(user.userId);
 
-        if (!userId) {
-            return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-            );
-        }
-
-        const applications = await getUserApplications(userId);
-
-        return NextResponse.json({ data: applications });
-    } catch (error: any) {
-        return NextResponse.json(
-            { message: error.message },
-            { status: 400 }
-        );
-    }
+    return NextResponse.json({ data: applications });
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message });
+  }
 }
 
-export async function updateApplicationStatusController(req: NextRequest) {
-    try {
-        await dbConnect();
+// ================= RECRUITER VIEW =================
+export async function getRecruiterApplicationsController(req: NextRequest) {
+  try {
+    const user = verifyToken(req);
 
-        const { appId, status } = await req.json();
-
-        const user = getUserFromToken(req);
-        const userId = user.id;
-
-        if (!userId) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
-
-        if (!appId || !status) {
-            return NextResponse.json(
-                { message: "appId and status required" },
-                { status: 400 }
-            );
-        }
-
-        const updated = await updateApplicationStatus(
-            appId,
-            status,
-            userId
-        );
-
-        return NextResponse.json({
-            message: "Status updated",
-            data: updated,
-        });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 400 });
+    if (user.role !== "recruiter") {
+      return NextResponse.json(
+        { message: "Only recruiters allowed" },
+        { status: 403 }
+      );
     }
+
+    const apps = await getApplicationsForRecruiter(user.userId);
+
+    // remove null jobs
+    const filtered = apps.filter((app: any) => app.job !== null);
+
+    return NextResponse.json({ data: filtered });
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message });
+  }
+}
+
+// ================= UPDATE STATUS =================
+export async function updateApplicationStatusController(req: NextRequest) {
+  try {
+    const { appId, status } = await req.json();
+    const user = verifyToken(req);
+
+    if (user.role !== "recruiter") {
+      return NextResponse.json(
+        { message: "Only recruiters allowed" },
+        { status: 403 }
+      );
+    }
+
+    const updated = await updateApplicationStatus(
+      appId,
+      status,
+      user.userId
+    );
+
+    return NextResponse.json({
+      message: "Updated",
+      data: updated,
+    });
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message });
+  }
 }

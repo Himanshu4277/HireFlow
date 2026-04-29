@@ -2,6 +2,7 @@ import mongoose, { Model, Document, Schema } from "mongoose";
 
 
 interface userSchemaProps extends Document {
+    role: string,
     username: string,
     email: string,
     password: string,
@@ -12,6 +13,12 @@ interface userSchemaProps extends Document {
 
 
 const userSchema: Schema<userSchemaProps> = new Schema({
+
+    role: {
+        type: String,
+        enum: ["recruiter", "jobSeeker"],
+        required: true
+    },
     username: {
         type: String,
         require: true

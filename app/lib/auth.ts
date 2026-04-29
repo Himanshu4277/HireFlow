@@ -2,19 +2,24 @@ import jwt from "jsonwebtoken";
 
 const secret = process.env.JWT_SECRET!;
 
-export function verifyToken(req: Request) {
-    const authHeader = req.headers.get("authorization");
+type DecodedToken = {
+  userId: string;
+  role: string;
+};
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        throw new Error("Unauthorized");
-    }
+export function verifyToken(req: Request): DecodedToken {
+  const authHeader = req.headers.get("authorization");
 
-    const token = authHeader.split(" ")[1];
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new Error("Unauthorized");
+  }
 
-    try {
-        const decoded = jwt.verify(token, secret) as { userId: string };
-        return decoded;
-    } catch (error) {
-        throw new Error("Invalid token");
-    }
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, secret) as DecodedToken;
+    return decoded;
+  } catch (error) {
+    throw new Error("Invalid token");
+  }
 }
