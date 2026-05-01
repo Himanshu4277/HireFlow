@@ -306,7 +306,38 @@ export default function Dashboard() {
             {/* ── Two-column: Upload + Recents  |  Tips + Breakdown ── */}
             <div className="grid grid-cols-[1fr_330px] gap-4.5 mb-4.5">
 
-              
+              {/* LEFT */}
+              <div className="flex flex-col gap-4">
+
+                {/* Drop Zone */}
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={(e) => { e.preventDefault(); setDragOver(false); }}
+                  onClick={() => fileRef.current?.click()}
+                  className={`rounded-[14px] border-2 border-dashed p-9 text-center cursor-pointer transition-all duration-200 ${dragOver
+                    ? "border-green-500 bg-green-50"
+                    : "border-gray-300 bg-gray-50 hover:border-green-500 hover:bg-green-50"
+                    }`}
+                >
+                  <div className="text-[34px] mb-2.5">📄</div>
+                  <p className="text-[15px] font-bold text-gray-900 mb-1">
+                    Drop your resume here to get a score
+                  </p>
+                  <p className="text-[12.5px] text-gray-400 mb-5">
+                    PDF or DOCX · Max 5 MB · Results in under 30 seconds
+                  </p>
+                  <button
+                    onClick={handleUploadClick}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-[9px] bg-green-600 hover:bg-green-700 text-white text-[13px] font-semibold transition-all"
+                  >
+                    📄 Upload Resume
+                  </button>
+                  <p className="text-[11px] text-gray-400 mt-2.5">or drag & drop</p>
+                </div>
+
+              </div>
+
               {/* RIGHT */}
               <div className="flex flex-col gap-4">
 

@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Resume {
@@ -108,18 +106,7 @@ export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const { token } = useAuthStore()
-  const router = useRouter()
-
-  const handleUploadClick = () => {
-    if (!token) {
-      toast.error("Please login first");
-      router.push("/login");
-      return;
-    }
-
-    router.push("/upload");
-  }
+  const token{} = useAuthStore()
 
   useEffect(() => {
     setMounted(true);
@@ -159,8 +146,8 @@ export default function Dashboard() {
                 key={item.label}
                 href={item.href}
                 className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13.5px] font-medium transition-all duration-150 mb-0.5 ${item.active
-                  ? "bg-green-50 text-green-600 font-semibold"
-                  : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+                    ? "bg-green-50 text-green-600 font-semibold"
+                    : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
                   }`}
               >
                 <span className="text-base">{item.icon}</span>
@@ -255,12 +242,12 @@ export default function Dashboard() {
                   Our AI scores your resume on 30+ criteria recruiters look for. Upload now and get actionable steps to land 5× more interviews.
                 </p>
                 <div className="flex items-center gap-2.5">
-                  <button
-                    onClick={handleUploadClick}
-                    className="flex items-center cursor-pointer gap-2 px-5 py-2.5 rounded-[9px] bg-green-600 hover:bg-green-700 text-white text-[13px] font-semibold transition-all"
+                  <Link
+                  href={"/upload"}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-[9px] bg-green-600 hover:bg-green-700 active:-translate-y-px text-white text-[13px] font-semibold transition-all"
                   >
                     📄 Upload Resume
-                  </button>
+                  </Link>
                   <Link href="/jobs">
                     <button className="flex items-center gap-2 px-5 py-2 rounded-[9px] border-[1.5px] border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-gray-700 text-[13px] font-medium transition-all">
                       Browse Jobs →
@@ -306,7 +293,38 @@ export default function Dashboard() {
             {/* ── Two-column: Upload + Recents  |  Tips + Breakdown ── */}
             <div className="grid grid-cols-[1fr_330px] gap-4.5 mb-4.5">
 
-              
+              {/* LEFT */}
+              <div className="flex flex-col gap-4">
+
+                {/* Drop Zone */}
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={(e) => { e.preventDefault(); setDragOver(false); }}
+                  onClick={() => fileRef.current?.click()}
+                  className={`rounded-[14px] border-2 border-dashed p-9 text-center cursor-pointer transition-all duration-200 ${dragOver
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-300 bg-gray-50 hover:border-green-500 hover:bg-green-50"
+                    }`}
+                >
+                  <div className="text-[34px] mb-2.5">📄</div>
+                  <p className="text-[15px] font-bold text-gray-900 mb-1">
+                    Drop your resume here to get a score
+                  </p>
+                  <p className="text-[12.5px] text-gray-400 mb-5">
+                    PDF or DOCX · Max 5 MB · Results in under 30 seconds
+                  </p>
+                  <Link
+                    href={"/upload"}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[9px] bg-green-600 hover:bg-green-700 text-white text-[13px] font-semibold transition-colors"
+                  >
+                    Upload Resume
+                  </Link>
+                  <p className="text-[11px] text-gray-400 mt-2.5">or drag & drop</p>
+                </div>
+
+              </div>
+
               {/* RIGHT */}
               <div className="flex flex-col gap-4">
 

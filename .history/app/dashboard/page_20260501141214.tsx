@@ -306,7 +306,13 @@ export default function Dashboard() {
             {/* ── Two-column: Upload + Recents  |  Tips + Breakdown ── */}
             <div className="grid grid-cols-[1fr_330px] gap-4.5 mb-4.5">
 
-              
+              {/* LEFT */}
+              <div className="flex flex-col gap-4">
+
+                
+
+              </div>
+
               {/* RIGHT */}
               <div className="flex flex-col gap-4">
 
