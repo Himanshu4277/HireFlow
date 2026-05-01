@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parseResume } from "./ai.service";
 
-export async function parseResumeWithOpenAiController(req: NextRequest) {
+export async function parseResumeWiController(req: NextRequest) {
 
     try {
         const formData = await req.formData();

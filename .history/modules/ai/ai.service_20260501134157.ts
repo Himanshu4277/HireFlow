@@ -1,15 +1,14 @@
-
+import PdfParse from "pdf-parse-new";
 
 export async function parseResume(file: File) {
   try {
-    const pdfParseModule = await import("pdf-parse-new");
-    const pdfParse = pdfParseModule.default || pdfParseModule;
+
 
     // convert file → buffer
     const buffer = Buffer.from(await file.arrayBuffer());
 
     // extract text
-    const pdfData = await pdfParse(buffer);
+    const pdfData = await PdfParse(buffer);
     const text = pdfData.text;
 
     if (!text) {

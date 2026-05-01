@@ -1,10 +1,7 @@
-
+import pdfParse from "pdf-parse";
 
 export async function parseResume(file: File) {
   try {
-    const pdfParseModule = await import("pdf-parse-new");
-    const pdfParse = pdfParseModule.default || pdfParseModule;
-
     // convert file → buffer
     const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -66,10 +63,7 @@ ${text}
 
     const result = aiData.choices[0].message.content;
 
-    // ⚠️ sometimes AI adds ```json → remove it
-    const clean = result.replace(/```json|```/g, "").trim();
-
-    return JSON.parse(clean);
+    return JSON.parse(result);
 
   } catch (error: any) {
     console.error("AI parsing failed:", error.message);

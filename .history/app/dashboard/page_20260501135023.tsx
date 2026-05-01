@@ -334,7 +334,7 @@ export default function Dashboard() {
                     PDF or DOCX · Max 5 MB · Results in under 30 seconds
                   </p>
                   <Link
-                    href={"/upload"}
+                    onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[9px] bg-green-600 hover:bg-green-700 text-white text-[13px] font-semibold transition-colors"
                   >
                     Upload Resume

@@ -100,7 +100,7 @@ export default function RecruiterDashboard() {
 
       {apps.map(app => (
         <div key={app._id} className="border p-4 mb-4 rounded">
-
+          
           {/* ✅ FIX 4: correct field names */}
           <h2>{app.job?.title}</h2>
 

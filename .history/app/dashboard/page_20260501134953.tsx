@@ -262,11 +262,11 @@ export default function Dashboard() {
                 </p>
                 <div className="flex items-center gap-2.5">
                   <Link
-                  href={"/upload"}
+                  
                     className="flex items-center gap-2 px-5 py-2.5 rounded-[9px] bg-green-600 hover:bg-green-700 active:-translate-y-px text-white text-[13px] font-semibold transition-all"
                   >
                     📄 Upload Resume
-                  </Link>
+                  </button>
                   <Link href="/jobs">
                     <button className="flex items-center gap-2 px-5 py-2 rounded-[9px] border-[1.5px] border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-gray-700 text-[13px] font-medium transition-all">
                       Browse Jobs →
@@ -333,12 +333,12 @@ export default function Dashboard() {
                   <p className="text-[12.5px] text-gray-400 mb-5">
                     PDF or DOCX · Max 5 MB · Results in under 30 seconds
                   </p>
-                  <Link
-                    href={"/upload"}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[9px] bg-green-600 hover:bg-green-700 text-white text-[13px] font-semibold transition-colors"
                   >
                     Upload Resume
-                  </Link>
+                  </button>
                   <p className="text-[11px] text-gray-400 mt-2.5">or drag & drop</p>
                 </div>
 

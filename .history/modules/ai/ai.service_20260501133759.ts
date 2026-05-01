@@ -1,9 +1,7 @@
-
-
 export async function parseResume(file: File) {
   try {
-    const pdfParseModule = await import("pdf-parse-new");
-    const pdfParse = pdfParseModule.default || pdfParseModule;
+    // ✅ correct dynamic import
+    const pdfParse = (await import("pdf-parse"));
 
     // convert file → buffer
     const buffer = Buffer.from(await file.arrayBuffer());

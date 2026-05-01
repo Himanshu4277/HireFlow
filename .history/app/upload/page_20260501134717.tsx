@@ -22,7 +22,7 @@ export default function ResumeUploader() {
             console.log("API RESPONSE:", data);
 
             if (!res.ok) {
-                alert(data.message || "Upload failed" || data.errpr);
+                alert(data.message || "Upload failed");
                 return;
             }
 

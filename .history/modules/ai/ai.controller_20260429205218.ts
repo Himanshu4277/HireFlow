@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseResume } from "./ai.service";
+import { parseResumeWithCVParse } from "./ai.service";
 
-export async function parseResumeWithOpenAiController(req: NextRequest) {
+export async function parseResumeWithCVParseController(req: NextRequest) {
 
     try {
         const formData = await req.formData();
@@ -14,14 +14,14 @@ export async function parseResumeWithOpenAiController(req: NextRequest) {
             );
         }
 
-        const data = await parseResume(file);
+        const data = await parseResumeWithCVParse(file);
 
         return NextResponse.json({
             success: true,
             data,
         });
 
-    } catch (error: any) {
+    } catch (error:any) {
         return NextResponse.json(
             { error: error.message || "Something went wrong" },
             { status: 500 }

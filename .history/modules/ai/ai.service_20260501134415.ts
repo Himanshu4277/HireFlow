@@ -1,4 +1,4 @@
-
+import PdfParse from "pdf-parse-new";
 
 export async function parseResume(file: File) {
   try {
@@ -9,7 +9,7 @@ export async function parseResume(file: File) {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     // extract text
-    const pdfData = await pdfParse(buffer);
+    const pdfData = await PdfParse(buffer);
     const text = pdfData.text;
 
     if (!text) {
