@@ -23,9 +23,8 @@ export async function parseResume(file: File) {
     }
 
     // send to OpenAI
-  } catch (error: any) {
-    console.error("Parsing failed:", error.message);
-    throw new Error(error.message);
+  } catch {
+
   }
 }
 
@@ -91,24 +90,3 @@ ${text}
   }
 }
 
-export async function basicParse(text: string) {
-  const email = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] || "";
-
-  const skillsList = [
-    "JavaScript", "TypeScript", "React", "Next.js",
-    "Node.js", "MongoDB", "SQL", "Python", "Java",
-    "C++", "HTML", "CSS"
-  ];
-
-  const foundSkills = skillsList.filter(skill =>
-    text.toLowerCase().includes(skill.toLowerCase())
-  );
-
-  return {
-    name: text.split("\n")[0] || "Unknown",
-    skills: foundSkills,
-    experience: text.slice(0, 300),
-    education: text.includes("Bachelor") ? "Bachelor Degree" : "",
-    strengths: foundSkills.slice(0, 3)
-  };
-}

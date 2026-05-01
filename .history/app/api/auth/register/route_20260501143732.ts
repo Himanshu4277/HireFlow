@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createUser } from "@/modules/auth/auth.service";
+import { createUseCacheTracker } from "next/dist/build/webpack/plugins/telemetry-plugin/use-cache-tracker-utils";
 
 
 export async function POST(req: Request) {

@@ -1,6 +1,6 @@
-import dbConnect from "@/lib/db";
-import Application from "@/models/Application";
-import Job from "@/models/Job";
+import dbConnect from "@/app/lib/db";
+import Application from "@/app/models/Application";
+import Job from "@/app/models/Job";
 
 // ================= APPLY =================
 export const applyJob = async (

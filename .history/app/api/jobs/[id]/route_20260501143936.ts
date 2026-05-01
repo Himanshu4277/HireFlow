@@ -1,4 +1,4 @@
-import { findJobController } from "@/modules/jobs/jobs.controller"
+import {  findJobController } from "@/modules/"
 
 export async function GET(
     req: Request,

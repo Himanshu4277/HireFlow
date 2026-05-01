@@ -1,4 +1,4 @@
-import User from "@/models/User";
+import Use
 import dbConnect from "@/lib/db";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"

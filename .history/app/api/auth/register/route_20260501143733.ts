@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createUser } from "@/modules/auth/auth.service";
+import { createUse
 
 
 export async function POST(req: Request) {

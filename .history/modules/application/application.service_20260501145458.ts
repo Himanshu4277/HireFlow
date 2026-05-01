@@ -1,4 +1,4 @@
-import dbConnect from "@/lib/db";
+import dbConnect from "@/app/lib/db";
 import Application from "@/models/Application";
 import Job from "@/models/Job";
 

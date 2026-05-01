@@ -91,7 +91,7 @@ ${text}
   }
 }
 
-export async function basicParse(text: string) {
+export asfunction basicParse(text: string) {
   const email = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] || "";
 
   const skillsList = [

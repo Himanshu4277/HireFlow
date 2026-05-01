@@ -1,4 +1,4 @@
-import User from "@/models/User";
+import User from "@/app/models/User";
 import dbConnect from "@/lib/db";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"

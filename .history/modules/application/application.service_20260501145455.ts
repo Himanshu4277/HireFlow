@@ -1,5 +1,5 @@
-import dbConnect from "@/lib/db";
-import Application from "@/models/Application";
+import dbConnect from "@/app/lib/db";
+import Application from "@/app/models/Application";
 import Job from "@/models/Job";
 
 // ================= APPLY =================

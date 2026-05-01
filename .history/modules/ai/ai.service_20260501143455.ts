@@ -15,18 +15,11 @@ export async function parseResume(file: File) {
     if (!text) {
       throw new Error("Could not extract text from PDF");
     }
-    try {
-      return await aiParse(text);
-    } catch (err) {
-      console.log("⚠️ AI failed, using fallback...");
-      return basicParse(text);
-    }
 
     // send to OpenAI
-  } catch (error: any) {
-    console.error("Parsing failed:", error.message);
-    throw new Error(error.message);
   }
+} catch {
+
 }
 
 export async function aiParse(text: string) {
@@ -91,24 +84,3 @@ ${text}
   }
 }
 
-export async function basicParse(text: string) {
-  const email = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] || "";
-
-  const skillsList = [
-    "JavaScript", "TypeScript", "React", "Next.js",
-    "Node.js", "MongoDB", "SQL", "Python", "Java",
-    "C++", "HTML", "CSS"
-  ];
-
-  const foundSkills = skillsList.filter(skill =>
-    text.toLowerCase().includes(skill.toLowerCase())
-  );
-
-  return {
-    name: text.split("\n")[0] || "Unknown",
-    skills: foundSkills,
-    experience: text.slice(0, 300),
-    education: text.includes("Bachelor") ? "Bachelor Degree" : "",
-    strengths: foundSkills.slice(0, 3)
-  };
-}
