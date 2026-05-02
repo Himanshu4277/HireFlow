@@ -1,4 +1,4 @@
-import { updateApplicationStatusController, applyJobController, getUserApplicationscontroller } from "@/app/modules/application/application.controller";
+import { updateApplicationStatusController, applyJobController, getUserApplicationscontroller } from "@/modules/application/application.controller";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {

@@ -1,4 +1,4 @@
-import { createJob, findJob, getAllJobs } from "./jobs.service"
+import { createJob, findJob, getAllJobs, fetchAndStoreJobsBySkills, getJobsFromDBBySkills } from "./jobs.service"
 import { NextResponse } from "next/server"
 import { verifyToken } from "@/lib/auth"
 
@@ -78,5 +78,20 @@ export async function findJobController(id: string) {
         return NextResponse.json({ success: true, data: job }, { status: 200 })
     } catch (error: any) {
         return NextResponse.json({ success: false, message: error.message }, { status: 404 })
+    }
+}
+
+
+
+
+export async function getJobsBySkillsController(skills: string[]) {
+    try {
+        const jobs = await fetchAndStoreJobsBySkills(skills);
+
+        if (jobs.length) return jobs;
+
+        return await getJobsFromDBBySkills(skills);
+    } catch (error) {
+        return await getJobsFromDBBySkills(skills);
     }
 }

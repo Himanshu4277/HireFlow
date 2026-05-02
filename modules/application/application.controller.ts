@@ -4,10 +4,10 @@ import {
   getUserApplications,
   updateApplicationStatus,
   getApplicationsForRecruiter,
-} from "@/app/modules/application/application.service";
-import { verifyToken } from "@/app/lib/auth";
-import dbConnect from "@/app/lib/db";
-import { getUserFromToken } from "@/app/utils/tokenVerify";
+} from "@/modules/application/application.service";
+import { verifyToken } from "@/lib/auth";
+import dbConnect from "@/lib/db";
+import { getUserFromToken } from "@/utils/tokenVerify";
 
 // ================= APPLY =================
 export async function applyJobController(req: NextRequest) {

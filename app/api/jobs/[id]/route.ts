@@ -1,10 +1,17 @@
-import { findJobController } from "@/modules/jobs/jobs.controller"
+import { findJobController } from "@/modules/jobs/jobs.controller";
 
 export async function GET(
-    req: Request,
-    context: { params: Promise<{ id: string }> }
+  req: Request,
+  { params }: { params: { id: string } }
 ) {
-    const { id } = await context.params;
+  try {
+    const job = await findJobController(params.id);
 
-    return findJobController(id);
+    return Response.json({ success: true, job });
+  } catch (error: any) {
+    return Response.json(
+      { success: false, message: error.message },
+      { status: 400 }
+    );
+  }
 }

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
+import { toast } from 'sonner'
 
 
 const Login = () => {
@@ -38,11 +39,13 @@ const Login = () => {
       const data = await res.json()
 
       if (!res.ok) {
-        alert(data.message || "Error while Login");
+        console.log(data.message || "Error while Login");
+        toast.error("Credentials Failed")
         return;
       }
       login(data.token, data.role);
       setForm(initialValue)
+      toast.success("Login Succefull")
       router.push("/dashboard");
     } catch (error) {
       console.error(error);
