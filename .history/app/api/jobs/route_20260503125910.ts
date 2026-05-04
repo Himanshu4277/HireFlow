@@ -1,0 +1,13 @@
+import { createJobController, findAllJobController } from "@/modules/jobs/jobs.controller";
+
+
+
+export async function POST(req: NextRequest) {
+    return createJobController(req);
+
+}
+
+export async function GET(req: Request) {
+    return findAllJobController(req);
+
+}

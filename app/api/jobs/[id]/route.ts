@@ -1,17 +1,19 @@
 import { findJobController } from "@/modules/jobs/jobs.controller";
+import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // ✅ params is Promise
 ) {
   try {
-    const job = await findJobController(params.id);
+    const { id } = await context.params; // ✅ FIX HERE
 
-    return Response.json({ success: true, job });
+    return findJobController(id);
+
   } catch (error: any) {
-    return Response.json(
+    return NextResponse.json(
       { success: false, message: error.message },
-      { status: 400 }
+      { status: 500 }
     );
   }
 }
