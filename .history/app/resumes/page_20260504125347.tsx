@@ -1,1 +1,0 @@
-Property 'user' does not exist on type 'AuthState'.
