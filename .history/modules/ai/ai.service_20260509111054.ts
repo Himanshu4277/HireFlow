@@ -144,4 +144,3 @@ export function basicParse(text: string) {
     strengths: foundSkills.slice(0, 3),
   };
 }
-

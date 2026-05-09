@@ -145,3 +145,4 @@ export function basicParse(text: string) {
   };
 }
 
+can we no need to export analyze resume here ?
